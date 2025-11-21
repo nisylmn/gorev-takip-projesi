@@ -1,0 +1,125 @@
+<div class="header-clean">
+  <h2>
+    👋 Hoş geldin, <span>{{ userInfo?.fullName }}</span>
+  </h2>
+  <div class="header-buttons">
+    <button (click)="logout()" class="btn-logout">Çıkış Yap</button>
+    <button (click)="goToAssign()" class="btn-assign">📋 Görev Ata</button>
+  </div>
+</div>
+
+<div class="add-task-box">
+  <h3>➕ Yeni Görev Ekle</h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <input [(ngModel)]="newTask.title" placeholder="Görev Başlığı" />
+    <input [(ngModel)]="newTask.description" placeholder="Açıklama" />
+    <input type="date" [(ngModel)]="newTask.startDate" [min]="today" />
+    <input type="date" [(ngModel)]="newTask.endDate" [min]="newTask.startDate" />
+  </div>
+
+  <button (click)="addTask()">➕ Görev Ekle</button>
+</div>
+
+<div class="my-tasks-section">
+  <h2>Oluşturduğunuz Görevler ({{ myCreatedTasks.length }})</h2>
+  <p class="section-subtitle">Kendi oluşturduğunuz ve yönettiğiniz görevler</p>
+
+  <div *ngIf="myCreatedTasks.length === 0" class="no-tasks">Henüz bir görev oluşturmadınız 💤</div>
+
+  <div class="tasks-list" *ngIf="myCreatedTasks.length > 0">
+    <div
+      class="task-card"
+      *ngFor="let task of myCreatedTasks"
+      [ngClass]="{ completed: task.isCompleted }"
+    >
+      <div class="task-header">
+        <h3 class="task-title">{{ task.title }}</h3>
+        <span class="task-status" [ngClass]="{ done: task.isCompleted }">
+          {{ task.isCompleted ? '✅ Tamamlandı' : '⏳ Devam Ediyor' }}
+        </span>
+      </div>
+
+      <p class="task-description">{{ task.description }}</p>
+
+      <div class="task-dates">
+        <div><strong>Başlangıç:</strong> {{ task.startDate | date : 'dd/MM/yyyy' }}</div>
+        <div><strong>Bitiş:</strong> {{ task.endDate | date : 'dd/MM/yyyy' }}</div>
+      </div>
+
+      <div class="task-actions">
+        <button class="btn btn-primary" (click)="toggleCreatedTaskCompletion(task)">
+          {{ task.isCompleted ? '↩️ Geri Al' : '✅ Tamamla' }}
+        </button>
+        <button class="btn btn-danger" (click)="deleteCreatedTask(task.id)">🗑️ Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-summary" *ngIf="myCreatedTasks.length > 0">
+    <div class="stat-item">
+      <span class="stat-label">Toplam:</span>
+      <span class="stat-value">{{ myCreatedTasks.length }}</span>
+    </div>
+    <div class="stat-item success">
+      <span class="stat-label">Tamamlanan:</span>
+      <span class="stat-value">{{ getCreatedCompletedCount() }}</span>
+    </div>
+    <div class="stat-item warning">
+      <span class="stat-label">Devam Eden:</span>
+      <span class="stat-value">{{ getCreatedPendingCount() }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="my-tasks-section assigned-section">
+  <h2>Size Atanan Görevler ({{ assignedToMeTasks.length }})</h2>
+  <p class="section-subtitle">Size atanmış ve tamamlamanız beklenen görevler</p>
+
+  <div *ngIf="assignedToMeTasks.length === 0" class="no-tasks">Size atanan görev bulunmuyor 💤</div>
+
+  <div class="tasks-list" *ngIf="assignedToMeTasks.length > 0">
+    <div
+      class="task-card assigned-task"
+      *ngFor="let task of assignedToMeTasks"
+      [ngClass]="{ completed: task.isCompleted }"
+    >
+      <div class="task-header">
+        <h3 class="task-title">{{ task.title }}</h3>
+        <span class="task-status" [ngClass]="{ done: task.isCompleted }">
+          {{ task.isCompleted ? '✅ Tamamlandı' : '⏳ Bekliyor' }}
+        </span>
+      </div>
+
+      <p class="task-description">{{ task.description }}</p>
+
+      <div class="task-dates">
+        <div><strong>Başlangıç:</strong> {{ task.startDate | date : 'dd/MM/yyyy' }}</div>
+        <div><strong>Bitiş:</strong> {{ task.endDate | date : 'dd/MM/yyyy' }}</div>
+      </div>
+
+      <div class="task-actions">
+        <!-- 🔥 Artık tek buton hem tamamla hem geri al yapıyor -->
+        <button class="btn btn-success" (click)="toggleAssignedTaskCompletion(task)">
+          {{ task.isCompleted ? '↩️ Geri Al' : '✅ Tamamla' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 İstatistikler -->
+  <div class="stats-summary" *ngIf="assignedToMeTasks.length > 0">
+    <div class="stat-item">
+      <span class="stat-label">Toplam:</span>
+      <span class="stat-value">{{ assignedToMeTasks.length }}</span>
+    </div>
+    <div class="stat-item success">
+      <span class="stat-label">Tamamlanan:</span>
+      <span class="stat-value">{{ getAssignedCompletedCount() }}</span>
+    </div>
+    <div class="stat-item warning">
+      <span class="stat-label">Bekleyen:</span>
+      <span class="stat-value">{{ getAssignedPendingCount() }}</span>
+    </div>
+  </div>
+</div>

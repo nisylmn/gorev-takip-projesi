@@ -1,0 +1,6 @@
+@GorevTakipAPI_HostAddress = http://localhost:5066
+
+GET {{GorevTakipAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

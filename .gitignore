@@ -1,0 +1,13 @@
+# --- Frontend (Angular/Node) ---
+node_modules/
+dist/
+.angular/
+package-lock.json
+
+# --- Backend (.NET / C#) ---
+bin/
+obj/
+.vs/
+*.user
+.DS_Store
+*.db
